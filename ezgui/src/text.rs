@@ -295,7 +295,7 @@ fn render_text(spans: Vec<TextSpan>, tolerance: f32, assets: &Assets) -> GeomBat
         Err(err) => panic!("render_text({}): {}", contents, err),
     };
     let mut batch = GeomBatch::new();
-    match crate::svg::add_svg_inner(&mut batch, svg_tree, tolerance) {
+    match crate::svg::add_svg_inner(&mut batch, svg_tree, tolerance, assets.scale_factor) {
         Ok(_) => batch,
         Err(err) => panic!("render_text({}): {}", contents, err),
     }

@@ -14,10 +14,12 @@ pub struct Assets {
     line_height_cache: RefCell<HashMap<(Font, usize), f64>>,
     svg_cache: RefCell<HashMap<String, (GeomBatch, Bounds)>>,
     pub text_opts: Options,
+    pub scale_factor: f64,
 }
 
 impl Assets {
-    pub fn new(default_font_size: usize, font_dir: String) -> Assets {
+    // TODO Can't update scale factor as things change...
+    pub fn new(default_font_size: usize, font_dir: String, scale_factor: f64) -> Assets {
         let mut a = Assets {
             default_line_height: 0.0,
             default_font_size,
@@ -25,6 +27,7 @@ impl Assets {
             line_height_cache: RefCell::new(HashMap::new()),
             svg_cache: RefCell::new(HashMap::new()),
             text_opts: Options::default(),
+            scale_factor,
         };
         a.default_line_height = a.line_height(Font::DejaVu, a.default_font_size);
         a.text_opts.font_directories.push(font_dir);
@@ -43,6 +46,7 @@ impl Assets {
         db.populate(&self.text_opts);
         // This seems to be missing line_gap, and line_gap is 0, so manually adjust here.
         let height = text::SCALE_LINE_HEIGHT
+            * self.scale_factor
             * db.load_font_idx(match font {
                 Font::DejaVu => 0,
                 Font::RobotoBold => 1,
