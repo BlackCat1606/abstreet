@@ -12,7 +12,7 @@ mod trips;
 pub use self::analytics::{Analytics, TripPhase};
 pub use self::events::{Event, TripPhaseType};
 pub use self::make::{
-    ABTest, BorderSpawnOverTime, IndividTrip, OriginDestination, Person, Population, Scenario,
+    ABTest, BorderSpawnOverTime, IndividTrip, OriginDestination, PersonSpec, Population, Scenario,
     SeedParkedCars, SimFlags, SpawnOverTime, SpawnTrip, TripSpawner, TripSpec,
 };
 pub(crate) use self::mechanics::{
@@ -22,7 +22,7 @@ pub(crate) use self::router::{ActionAtEnd, Router};
 pub(crate) use self::scheduler::{Command, Scheduler};
 pub use self::sim::{Sim, SimOptions};
 pub(crate) use self::transit::TransitSimState;
-pub use self::trips::{TripCount, TripResult};
+pub use self::trips::{Person, PersonState, TripCount, TripResult};
 pub use self::trips::{TripEnd, TripMode, TripStart};
 pub(crate) use self::trips::{TripLeg, TripManager};
 pub use crate::render::{

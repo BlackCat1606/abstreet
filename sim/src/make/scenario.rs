@@ -71,19 +71,6 @@ impl Scenario {
 
         timer.start(format!("Instantiating {}", self.scenario_name));
 
-        if let Some(ref routes) = self.only_seed_buses {
-            for route in map.get_all_bus_routes() {
-                if routes.contains(&route.name) {
-                    sim.seed_bus_route(route, map, timer);
-                }
-            }
-        } else {
-            // All of them
-            for route in map.get_all_bus_routes() {
-                sim.seed_bus_route(route, map, timer);
-            }
-        }
-
         timer.start("load full neighborhood info");
         let neighborhoods = FullNeighborhoodInfo::load_all(map);
         timer.stop("load full neighborhood info");
@@ -144,6 +131,22 @@ impl Scenario {
         }
 
         sim.spawn_all_trips(map, timer, true);
+
+        // Do this AFTER spawn_all_trips, so the TripIDs don't clobber anything. What a hack. :(
+        if let Some(ref routes) = self.only_seed_buses {
+            for route in map.get_all_bus_routes() {
+                if routes.contains(&route.name) {
+                    sim.seed_bus_route(route, map, timer);
+                }
+            }
+        } else {
+            // All of them
+            for route in map.get_all_bus_routes() {
+                sim.seed_bus_route(route, map, timer);
+            }
+        }
+
+        sim.seed_all_people(&self.population.people);
         timer.stop(format!("Instantiating {}", self.scenario_name));
     }
 
@@ -900,13 +903,13 @@ fn pick_starting_lanes(mut lanes: Vec<LaneID>, is_bike: bool, map: &Map) -> Vec<
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Population {
-    pub people: Vec<Person>,
+    pub people: Vec<PersonSpec>,
     pub individ_trips: Vec<IndividTrip>,
     pub individ_parked_cars: BTreeMap<BuildingID, usize>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-pub struct Person {
+pub struct PersonSpec {
     pub id: PersonID,
     pub home: Option<BuildingID>,
     // Index into individ_trips. Each trip is referenced exactly once; this representation doesn't

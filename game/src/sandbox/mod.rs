@@ -357,7 +357,7 @@ impl AgentMeter {
     pub fn new(ctx: &mut EventCtx, app: &App, show_score: Option<ScoreCard>) -> AgentMeter {
         use abstutil::prettyprint_usize;
 
-        let (finished, unfinished, by_mode) = app.primary.sim.num_trips();
+        let (finished, unfinished, by_mode, ppl_in_bldg, ppl_off_map) = app.primary.sim.num_trips();
 
         let mut rows = vec![
             ManagedWidget::draw_text(ctx, Text::from(Line("Active agents"))),
@@ -381,6 +381,16 @@ impl AgentMeter {
                 ManagedWidget::draw_text(
                     ctx,
                     Text::from(Line(prettyprint_usize(by_mode[&TripMode::Transit]))),
+                ),
+            ])
+            .centered(),
+            // TODO Not sure about this one yet
+            ManagedWidget::row(vec![
+                ManagedWidget::draw_svg(ctx, "../data/system/assets/tools/home.svg"),
+                ManagedWidget::draw_text(ctx, Text::from(Line(prettyprint_usize(ppl_in_bldg)))),
+                ManagedWidget::draw_text(
+                    ctx,
+                    Text::from(Line(format!("Off-map: {}", prettyprint_usize(ppl_off_map)))),
                 ),
             ])
             .centered(),

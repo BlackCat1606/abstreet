@@ -4,7 +4,7 @@ use abstutil::{prettyprint_usize, MultiMap, Timer};
 use geom::{Distance, Duration, LonLat, Polygon, Pt2D, Time};
 use map_model::{BuildingID, IntersectionID, Map, PathConstraints, Position};
 use sim::{
-    DrivingGoal, IndividTrip, Person, PersonID, Population, Scenario, SidewalkSpot, SpawnTrip,
+    DrivingGoal, IndividTrip, PersonID, PersonSpec, Population, Scenario, SidewalkSpot, SpawnTrip,
     TripSpec,
 };
 use std::collections::{BTreeMap, HashMap};
@@ -327,7 +327,7 @@ pub fn trips_to_scenario(map: &Map, timer: &mut Timer) -> Scenario {
             assert!(individ_trips[idx].1.is_none());
             individ_trips[idx].1 = Some(id);
         }
-        population.people.push(Person {
+        population.people.push(PersonSpec {
             id,
             // TODO Do we have to scrape a new input file for this? :(
             home: None,
